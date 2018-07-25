@@ -95,9 +95,9 @@ class Body extends Component {
       <View style={ styles.body }>
         <View style={ { display: 'flex' } }>
           <TouchableHighlight style={ styles.monthPickerButton } onPress={ () => this.setState({ triggerMonthSelector: !triggerMonthSelector }) }>
-            <Text style={ { fontWeight: 'bold', fontSize: 16 } }>Game releases in { `${this.months[selectedMonth]} ${new Date().getFullYear()}` }</Text>
+            <Text style={ { color: '#416788', fontWeight: 'bold', fontSize: 15 } }>Game releases in { `${this.months[selectedMonth]} ${new Date().getFullYear()}` }</Text>
           </TouchableHighlight>
-          <Image style={ { position: 'absolute', top: 53, right: 60 } } source={ require('../../assets/caret_down.png') } />
+          <Image style={ { position: 'absolute', top: 52, right: 25 } } source={ require('../../assets/caret_down.png') } />
         </View>
 
         { loading
