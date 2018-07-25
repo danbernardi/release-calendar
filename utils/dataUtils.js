@@ -17,5 +17,7 @@ export const getPlatform = (platformSlug) => ({
   'nintendo-switch': 'Switch',
   'psvita': 'Vita',
   '3ds': '3DS',
+  'oculus-vr': 'Rift',
+  'playstation-vr': 'PSVR',
   'default': 'Other'
 }[platformSlug || 'default']);

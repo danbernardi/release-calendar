@@ -6,7 +6,8 @@ export default StyleSheet.create({
     ...pageMargins,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    paddingTop: 40,
-    paddingBottom: 10
+    paddingTop: 30,
+    paddingBottom: 10,
+    backgroundColor: '#fff'
   }
 });

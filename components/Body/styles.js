@@ -5,6 +5,6 @@ export default StyleSheet.create({
     flex: 2,
     backgroundColor: '#fafafa',
     width: '100%',
-    paddingBottom: 25
+    // paddingBottom: 25
   }
 });

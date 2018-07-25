@@ -3,8 +3,8 @@ import { pageMargins } from '../../styles/mixins';
 
 export default StyleSheet.create({
   entry: {
-    paddingTop: 25,
-    paddingBottom: 25,
+    paddingTop: 15,
+    paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     flexDirection: 'row',
@@ -13,14 +13,13 @@ export default StyleSheet.create({
   },
 
   platform: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: '#ddd',
-    paddingTop: 2,
+    backgroundColor: '#eee',
     paddingBottom: 5,
-    paddingLeft: 25,
-    paddingRight: 25,
-    fontSize: 12
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    fontSize: 12,
+    height: 25,
+    borderRadius: 25
   }
 });
