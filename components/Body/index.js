@@ -15,18 +15,22 @@ class Body extends Component {
 
   componentDidMount () {
     return fetch(
-      'https://api-endpoint.igdb.com/release_dates/?fields=y,m,date,game.name,game.cover,platform.slug&limit=50&expand=game,platform&filter[y][eq]=2018&filter[m][eq]=1&filter[platform][not_in]=14,3,82,43,39,34,92&order=date:asc',
+      'https://api-endpoint.igdb.com/release_dates/?fields=y,m,date,game.name,game.cover,platform.slug&limit=50&expand=game,platform&filter[region][eq]=2&filter[y][eq]=2018&filter[m][eq]=1&filter[platform][not_in]=14,3,82,43,39,34,92&order=date:asc',
       { headers: { 'user-key': '1f5d68f679e98eb1957860ce1130b5c3' } }
     )
       .then(response => response.json())
       .then(responseJson => {
-        this.setState({ data: responseJson });
+        const filteredRespnose = responseJson.filter(data => new Date(data.date).getFullYear() === 2018);
+        this.setState({ data: filteredRespnose });
       })
       .catch((error) => console.log(error));
   }
 
   render () {
     const { data } = this.state;
+    // if (data) {
+    //   data.filter((item) => { debugger; return new Date(item.date).getFullYear() === 2018; });
+    // }
     console.log(data);
 
     return (

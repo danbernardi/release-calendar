@@ -10,11 +10,18 @@ function Entry (props) {
 
   console.log(props);
 
+  const coverSrc = (game.cover) ? `https://images.igdb.com/igdb/image/upload/t_cover_small_2x/${game.cover.cloudinary_id}.jpg` : 'https://s3-us-west-1.amazonaws.com/release-calendar/public/cover_placeholder.png';
+
   return (
     <View style={ styles.entry }>
-      <Image source={ { uri: game.cover ? game.cover.url : '' } } style={ { width: 31, height: 43, marginRight: 20, overflow: 'visible' } } />
+      <Image
+        resizeMode="contain"
+        resizeMethod="resize"
+        source={ { uri: coverSrc } }
+        style={ { width: 31,  height: 43, marginRight: 20, overflow: 'visible' } }
+      />
       <View>
-        <Text numberOfLines={ 1 } style={ { fontWeight: 'bold', marginBottom: 5 } }>{ game.name }</Text>
+        <Text numberOfLines={ 2 } style={ { fontWeight: 'bold', marginBottom: 5 } }>{ game.name }</Text>
         <Text>{ moment(date).format('MMMM D') }</Text>
       </View>
       <Text style={ styles.platform }>{ getPlatform(platform.slug) }</Text>
