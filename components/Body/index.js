@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SectionList, FlatList, View } from 'react-native';
+import { Image, SectionList, View, PickerIOS, TouchableHighlight, Text } from 'react-native';
 import styles from './styles';
 import Entry from '../Entry';
 import SectionTitle from '../SectionTitle';
@@ -10,24 +10,65 @@ class Body extends Component {
     super(props);
 
     this.state = {
-      data: null
+      data: null,
+      triggerMonthSelector: false,
+      selectedMonth: 0,
+      selectedMonthQueue: 0
     };
+
+    this.months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
+    this.currentYear = new Date().getFullYear();
   }
 
-  componentDidMount () {
+  getFetchUrl (monthIndex) {
+    const minDateRange = new Date(`${this.months[monthIndex]} 1, ${this.currentYear}`).getTime();
+    const maxDateRange = new Date(`${this.months[monthIndex]} 31, ${this.currentYear}`).getTime();
+    return `https://api-endpoint.igdb.com/release_dates/?fields=date,game.name,game.cover,platform.slug&limit=50&expand=game,platform&filter[region][eq]=2&filter[date][gte]=${minDateRange}&filter[date][lte]=${maxDateRange}&filter[platform][not_in]=52,41,45,14,3,82,43,39,34,92&order=date:asc`;
+  }
+
+  fetchData () {
+    const { selectedMonth } = this.state;
+    this.setState({ loading: true });
+
     return fetch(
-      'https://api-endpoint.igdb.com/release_dates/?fields=y,m,date,game.name,game.cover,platform.slug&limit=50&expand=game,platform&filter[region][eq]=2&filter[date][gt]=1514793600000&filter[m][eq]=9&filter[platform][not_in]=52,41,45,14,3,82,43,39,34,92&order=date:asc',
+      this.getFetchUrl(selectedMonth),
       { headers: { 'user-key': '1f5d68f679e98eb1957860ce1130b5c3' } }
     )
       .then(response => response.json())
       .then(responseJson => {
-        this.setState({ data: responseJson });
+        this.setState({ data: responseJson, loading: false });
       })
       .catch((error) => console.log(error));
   }
 
+  componentDidMount () {
+    this.fetchData();
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.selectedMonth !== this.state.selectedMonth) this.fetchData();
+  }
+
+  monthSelectionHandler (itemValue) {
+    this.setState({ selectedMonthQueue: itemValue });
+  }
+
   render () {
-    const { data } = this.state;
+    const { data, selectedMonth, selectedMonthQueue, triggerMonthSelector, loading } = this.state;
     // if (data) {
     //   data.filter((item) => { debugger; return new Date(item.date).getFullYear() === 2018; });
     // }
@@ -52,12 +93,43 @@ class Body extends Component {
 
     return (
       <View style={ styles.body }>
-          <SectionList
+        <View style={ { display: 'flex' } }>
+          <TouchableHighlight style={ styles.monthPickerButton } onPress={ () => this.setState({ triggerMonthSelector: !triggerMonthSelector }) }>
+            <Text style={ { fontWeight: 'bold', fontSize: 16 } }>Game releases in { `${this.months[selectedMonth]} ${new Date().getFullYear()}` }</Text>
+          </TouchableHighlight>
+          <Image style={ { position: 'absolute', top: 53, right: 60 } } source={ require('../../assets/caret_down.png') } />
+        </View>
+
+        { loading
+          ? <Text style={ styles.loader }>Loading</Text>
+          : <SectionList
+            ref={ el => { this.sectionList = el; } }
             sections={ sections }
             renderItem={ ({ item }) => <Entry { ...item } /> }
-            renderSectionHeader={ ({ section: { title } }) => <SectionTitle title={ moment(title).format('dddd, MMMM D') } /> }
+            renderSectionHeader={ ({ section: { title } }) => <SectionTitle title={ moment(title).format('dddd, MMM D') } /> }
             keyExtractor={ (item, index) => item + index }
           />
+        }
+
+        { triggerMonthSelector &&
+          <View style={ styles.picker }>
+            <TouchableHighlight
+              style={ styles.pickerBtn }
+              onPress={ () => this.setState({ selectedMonth: selectedMonthQueue, triggerMonthSelector: false }) }
+              underlayColor="pink"
+            >
+              <Text style={ { color: '#416788', fontWeight: 'bold' } }>Done</Text>
+            </TouchableHighlight>
+            <PickerIOS
+              selectedValue={ selectedMonthQueue }
+              onValueChange={ (itemValue) => this.monthSelectionHandler(itemValue) }
+            >
+              { this.months.map((month, index) => (
+                <PickerIOS.Item key={ index } label={ month } value={ index } />
+              )) }
+            </PickerIOS>
+          </View>
+        }
       </View>
     );
   }
